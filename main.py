@@ -7,11 +7,11 @@ from dotenv import load_dotenv
 
 
 def fetch_coordinates(apikey, address):
-    base_url = "https://geocode-maps.yandex.ru/1.x"
+    base_url = 'https://geocode-maps.yandex.ru/1.x'
     response = requests.get(base_url, params={
-        "geocode": address,
-        "apikey": apikey,
-        "format": "json",
+        'geocode': address,
+        'apikey': apikey,
+        'format': 'json',
     })
     response.raise_for_status()
     found_places = response.json()['response']['GeoObjectCollection']['featureMember']
@@ -25,7 +25,7 @@ def fetch_coordinates(apikey, address):
 
 
 def get_min_distance(list_ch):
-    return list_ch["distance"]
+    return list_ch['distance']
 
 
 def map(coords_rev, sorted_list):
@@ -35,18 +35,18 @@ def map(coords_rev, sorted_list):
         location=[coords_rev[0], coords_rev[1]],
         tooltip="Click me!",
         popup="Ваше местоположение",
-        icon=folium.Icon(color="red"),
+        icon=folium.Icon(color='red'),
     ).add_to(m)
 
     for sorted_list in sorted_list:
         folium.Marker(
-            location=[sorted_list["latitude"], sorted_list["longitude"]],
+            location=[sorted_list['latitude'], sorted_list['longitude']],
             tooltip="Click me!",
-            popup=sorted_list["title"],
-            icon=folium.Icon(color="green"),
+            popup=sorted_list['title'],
+            icon=folium.Icon(color='green'),
         ).add_to(m)
 
-        m.save("index.html")
+        m.save('index.html')
 
 
 def main():
@@ -56,22 +56,22 @@ def main():
     coords = fetch_coordinates(apikey, question)
     coords_rev = coords[1], coords[0]
 
-    with open("coffee.json", "r") as my_file:
+    with open('coffee.json', 'r', encoding='windows-1251') as my_file:
         file_contents = my_file.read()
     coffee_houses = json.loads(file_contents)
 
     not_sorted_list = []
     for coffee_house in coffee_houses:
-        name = coffee_house["Name"]
-        latitude = coffee_house["Latitude_WGS84"]
-        longitude = coffee_house["Longitude_WGS84"]
+        name = coffee_house['Name']
+        latitude = coffee_house['Latitude_WGS84']
+        longitude = coffee_house['Longitude_WGS84']
         ch_coords_rev = latitude, longitude
         my_distance = distance.distance(coords_rev, ch_coords_rev).km
         coffee_house_dict = {
-            "title": name,
-            "distance": my_distance,
-            "latitude": latitude,
-            "longitude": longitude
+            'title': name,
+            'distance': my_distance,
+            'latitude': latitude,
+            'longitude': longitude
         }
         not_sorted_list.append(coffee_house_dict)
 
